@@ -121,8 +121,8 @@ p{
        justify-self: start;
 }
 .five-day-forecast-container .day-wise-forecast .day{
-    width: 75px;
-    height: 75px;
+   text-transform: capitalize;
+   justify-self: start;
 }
 
 /*BLOCK 4*/

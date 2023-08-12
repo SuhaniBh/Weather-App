@@ -10,50 +10,40 @@ const getCurrentWeatherData = async () => {
 };
 
 const getHourlyForecast = async ({ name: city }) => {
-  const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`
-  );
+  const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`);
   const data = await response.json();
   return data.list.map((forecast) => {
-    const {
-      main: { temp, temp_max, temp_min },
-      dt,
-      dt_txt,
-      weather: [{ description, icon }],
-    } = forecast;
+    const {main: { temp, temp_max, temp_min }, dt, dt_txt, weather: [{ description, icon }],} = forecast;
     return { temp, temp_max, temp_min, dt, dt_txt, description, icon };
   });
 };
 
 const formatTemperature = (temp) => `${temp?.toFixed(1)}°`;
-const createIconUrl = (icon) =>
-  `https://openweathermap.org/img/wn/${icon}@2x.png`;
+const createIconUrl = (icon) =>`https://openweathermap.org/img/wn/${icon}@2x.png`;
 
-const loadCurrentForecast = ({
-  name,
-  main: { temp, temp_max, temp_min },
-  weather: [{ description }],
-}) => {
+const loadCurrentForecast = ({name, main: { temp, temp_max, temp_min }, weather: [{ description }] }) => {
   const currentForecastElement = document.querySelector("#Current-Forecast");
   currentForecastElement.querySelector(".city").textContent = name;
-  currentForecastElement.querySelector(".temp").textContent =
-    formatTemperature(temp);
+  currentForecastElement.querySelector(".temp").textContent = formatTemperature(temp);
   currentForecastElement.querySelector(".desc").textContent = description;
-  currentForecastElement.querySelector(
-    ".min-max"
-  ).textContent = `H:${formatTemperature(temp_max)} L:${formatTemperature(
-    temp_min
-  )}`;
+  currentForecastElement.querySelector(".min-max").textContent = `H:${formatTemperature(temp_max)} L:${formatTemperature(temp_min)}`;
 };
 
-const loadHourlyForecast = (hourlyForecast) => {
-  let dataFor12Hours = hourlyForecast.slice(1, 13);
+const loadHourlyForecast = ({ main:{ temp: tempNow }, weather:{ icon: iconNow }} , hourlyForecast) => {
+  const timeFormatter = Intl.DateTimeFormat("en", {
+    hour12: true, hour: "numeric"
+  });
+  let dataFor12Hours = hourlyForecast.slice(2, 14);
   const hourlyContainer = document.querySelector(".hourly-container");
-  let innerHTMLString = ``;
+  let innerHTMLString = `<article>
+  <h3 class="time">Now</h3>
+  <img class="icon" src="${createIconUrl(iconNow)}" alt="weather-icon" />
+  <p class="hourly-temp">${formatTemperature(tempNow)}</p>
+</article>`;
 
   for (let { temp, icon, dt_txt } of dataFor12Hours) {
     innerHTMLString += `<article>
-           <h3 class="time">${dt_txt.split(" ")[1]}</h3>
+           <h3 class="time">$${timeFormatter.format(new Date(dt_txt))}</h3>
            <img class="icon" src="${createIconUrl(icon)}" />
            <p class="hourly-temp">${formatTemperature(temp)}</p>
        </article>`;
@@ -94,7 +84,7 @@ const loadFiveDayForecast = (hourlyForecast) => {
     ([day, { temp_max, temp_min, icon }], index) => {
       if (index < 5) {
         dayWiseInfo += `<article class="day-wise-forecast">
-        <h3>${index === 0 ? "today" : day}</h3>
+        <h3 class="day">${index === 0 ? "today" : day}</h3>
         <img class="icon" src="${createIconUrl(icon)}" alt="icon for the forecast"/>
         <p class="min-temp">${formatTemperature(temp_min)}</p>
         <p class="max-temp">${formatTemperature(temp_max)}</p>
@@ -122,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadCurrentForecast(currentWeather);
 
   const hourlyForecast = await getHourlyForecast(currentWeather);
-  loadHourlyForecast(hourlyForecast);
+  loadHourlyForecast(currentWeather. hourlyForecast);
 
   loadFiveDayForecast(hourlyForecast);
 
