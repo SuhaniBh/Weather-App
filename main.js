@@ -119,6 +119,14 @@ const loadHumidity = ({ main: { humidity } }) => {
   container.querySelector(".humidity-value").textContent = `${humidity} %`;
 };
 
+loadForecastUsingGeoLocation = () =>{
+  navigator.geolocation.getCurrentPosition(({coords})=>{
+     const {latitude : lat, longitude : lon} = coords;
+     selectedCity = {lat, lon};
+     loadData();
+  }, error => console.log(error));
+}
+
 const loadData = async () => {
   const currentWeather = await getCurrentWeatherData(selectedCity);
   loadCurrentForecast(currentWeather);
@@ -155,7 +163,7 @@ const onSearchChange = async(event) => {
       const listOfCities = await getCitiesUsingGeolocations(value);
       let options = "";
       for (let {lat, lon, name, state, country} of listOfCities){
-        options += `<option data-city-details="${JSON.stringify({lat, lon, name})}" value = "${name}, ${state}, ${country}"></option>;`
+        options += `<option data-city-details='${JSON.stringify({lat, lon, name})}' value = "${name}, ${state}, ${country}"></option>;`
       }
       document.querySelector("#cities").innerHTML = options;
       console.log((listOfCities));
@@ -163,14 +171,14 @@ const onSearchChange = async(event) => {
   }
 
 const handleCitySelection = (event) => {
-  console.log("selection done");
+  //console.log("selection done");
   selectedCityText = event.target.value;
   let options = document.querySelectorAll("#cities > option");
-  console.log(options);
+  //console.log(options);
   if (options?.length){
     let selectedOption = Array.from(options).find(opt => opt.value === selectedCityText);
-    selectedCity = JSON.parse(selectedOption.getAttribute("data-city-details"));
-    console.log({selectedCity});
+    selectedCity = JSON.parse(selectedOption.getAttribute('data-city-details'));
+    //console.log({selectedCity});
     loadData();
   }
 }
@@ -178,7 +186,7 @@ const handleCitySelection = (event) => {
 const  debounceSearch = debounce ((event)=> onSearchChange(event))
 
 document.addEventListener("DOMContentLoaded", async () => {
-
+  loadForecastUsingGeoLocation();
   const searchInput = document.querySelector("#search");
   searchInput.addEventListener("input", debounceSearch);
   searchInput.addEventListener("change", handleCitySelection);
