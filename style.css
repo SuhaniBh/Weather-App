@@ -32,6 +32,8 @@ p{
     border-radius: var(--spacing-regular);
     padding: var(--spacing-regular);
     gap: var(--spacing-regular);
+    color: #222;
+    background-color: #222;
 }
 
 /*styles related to current weather data*/
@@ -58,6 +60,7 @@ p{
 #Current-Forecast{
     grid-area: current;
     text-align: center;
+    background: linear-gradient(135deg, #00feba, #5b548a);
 }
 /*defining each internal element eg temp,desc & min-max temp*/
 #Current-Forecast .temp{
@@ -76,6 +79,7 @@ p{
 #Hourly-Forecast{
     grid-area: hourly;
     text-align: center;
+    background: linear-gradient(135deg, #00feba, #5b548a);
 }
 /*styles related to hourly-forecast*/
 #Hourly-Forecast .hourly-container{
@@ -100,6 +104,7 @@ p{
 #Daily-Forecast{
     grid-area: daily;
     text-align: center;
+    background: linear-gradient(135deg, #00feba, #5b548a);
 }
 
 /*styles related to daily forcast*/
@@ -137,10 +142,12 @@ p{
 #feels-Like{
     grid-area: feels;
     text-align: center;
+    background: linear-gradient(135deg, #00feba, #5b548a);
 } 
 #Humidity{
     grid-area: humidity;
     text-align: center;
+    background: linear-gradient(135deg, #00feba, #5b548a);
 }
 
 /*Responsiveness for larger devices*/
