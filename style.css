@@ -18,6 +18,7 @@ body{
     max-width: 800px;
     font-family: Arial, Helvetica, sans-serif;
     margin: var(--spacing-regular) auto;
+    background-color: #222;
 }
 h1,
 h2{
